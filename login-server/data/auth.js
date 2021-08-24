@@ -13,7 +13,7 @@ let users = [
     const created = {
         ...user, id: Date.now().toString()      
     };
-    users.push(created)
+    users.push(created);
     return created.id;
 }
 
@@ -22,4 +22,9 @@ let users = [
     return users.find((user) => user.username === username);
     
     
+    }
+
+    export async function findById(id) {
+
+        return users.find((user) => user.id === id);
     }

@@ -2,6 +2,7 @@ import express from 'express';
 import 'express-async-errors';
 import { body } from 'express-validator';
 import { validate } from '../middleware/validator.js';
+import { isAuth } from '../middleware/auth.js';
 import * as authController from '../controller/auth.js';
 
 const router = express.Router();
@@ -33,7 +34,7 @@ const validateDignup = [
 
 router.post('/signup', validateDignup, authController.signup);
 router.post('/login', validateCredential, authController.login);
-//router.post('/me',authController.me);
+router.get('/me', isAuth ,authController.me);
 
 
 export default router;

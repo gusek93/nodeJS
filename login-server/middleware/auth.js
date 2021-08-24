@@ -4,12 +4,15 @@ import * as userRepository from '../data/auth.js';
 const AUTH_ERROR = { message: 'Authentication Error' };
 
 export const isAuth = async (req, res, next) => {
-  const authHeader = req.get('Authorization');
+ 
+  //Header에 Authorization 값을 가지고 온다(토큰 정보)
+  const authHeader = req.get('Authorization');  
   if (!(authHeader && authHeader.startsWith('Bearer '))) {
     return res.status(401).json(AUTH_ERROR);
   }
 
   const token = authHeader.split(' ')[1];
+  
   // TODO: Make it secure!
   jwt.verify(
     token,

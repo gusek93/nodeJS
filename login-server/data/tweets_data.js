@@ -5,17 +5,15 @@ let tweets = [
     {
        id: '1',
        text: '화이팅',
-       createdAt: Date.now().toString(),
-       name: 'Bob',
-       username: 'bob',
+       createdAt: new Date().toString(),
+       userId: '1',
    
     },
     {
        id: '2',
        text: '화이팅',
-       createdAt: Date.now().toString(),
-       name: 'dayong',
-       username: 'dayong',
+       createdAt: new Date().toString(),
+       userId: '2',
    
     },
    ];
@@ -23,7 +21,14 @@ let tweets = [
 
    //module.exports = tweets;
    export async function getAll() {
-       return tweets;
+       return Promise.all(
+           tweets.map(async (tweet) => {
+               const { username, name, url } = await userRepository.findById(
+                   tweet.userId
+               );
+               return { ...tweet, username, name, url};
+           })
+       );
    }
 
    export async function getAllByUsername() {
