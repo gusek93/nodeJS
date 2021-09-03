@@ -1,4 +1,5 @@
 import * as tweetRepository from '../data/tweet.js';
+import { getSocketIO } from '../connection/socket.js';
 
 export async function getTweets(req, res) {
   const username = req.query.username;
@@ -22,6 +23,7 @@ export async function createTweet(req, res, next) {
   const { text } = req.body;
   const tweet = await tweetRepository.create(text, req.userId);
   res.status(201).json(tweet);
+  getSocketIO().emit('tweets', tweet);
 }
 
 export async function updateTweet(req, res, next) {
@@ -32,7 +34,6 @@ export async function updateTweet(req, res, next) {
     return res.status(404).json({ message: `Tweet not found: ${id}` });
   }
   if (tweet.userId !== req.userId) {
-    // 권한이 없을때 403
     return res.sendStatus(403);
   }
   const updated = await tweetRepository.update(id, text);

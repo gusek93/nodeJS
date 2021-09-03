@@ -5,6 +5,12 @@ import morgan from 'morgan';
 import helmet from 'helmet';
 import tweetsRouter from './router/tweets.js';
 import authRouter from './router/auth.js';
+import { config } from './config.js';
+import { initSocket } from './connection/socket.js';
+//import { db } from './db/database.js';
+import { sequelize } from './db/database.js';
+
+
 
 const app = express();
 
@@ -24,4 +30,11 @@ app.use((error, req, res, next) => {
   console.error(error);
   res.sendStatus(500);
 });
-app.listen(8080);
+
+//db.getConnection().then((connection) => console.log(connection));
+sequelize.sync().then((client) => {
+  //console.log(client);
+  const server = app.listen(config.host.port);
+  initSocket(server);
+})
+
