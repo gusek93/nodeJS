@@ -1,8 +1,9 @@
 import express from 'express';
-import bodyparser from 'body-parser';
 
 // Restapi 작성 하기 
 // 데이터 베이스가 없으니 스키마 지정
+// 다시 한번 복습 필요!!
+
 let tweets = [
     {
     id: '1',  
@@ -66,16 +67,47 @@ router.get('/:id', (req, res, next) =>{
 //     }
 // })
 
-app.use(bodyParser.urlencoded({extended:true})); 
-app.use(bodyParser.json());
-
 
 router.post('/', (req, res, next) =>{
-    //const {text, name, username} = req.body;
-    const text = req.body;
+    const { text, name, username } = req.body;
+    const tweet = {
+        id : Date.now().toString(),
+        text,
+        createdAt: new Date(),
+        name,
+        username,
+    };
+    tweets = [tweet, ...tweets];
+    res.status(201).json(tweet);
+});
 
-    console.log(req.body);
-    res.status(200).json('성공');
+
+router.put('/:id', (req, res, next)=>{
+    const id = req.params.id;
+    const text = req.body.text;
+    const tweet = tweets.find((tweet) => tweet.id === id);
+
+    if (tweet) {
+        tweet.text = text;
+        res.status(200).json(tweet);
+    } else {
+        res.status(404).json('id not found')
+    }
 })
+
+
+router.delete('/:id', (req, res, next) => {
+    const id = req.params.id;
+    const tweet = tweets.find((tweet) => tweet.id === id);
+    //res.sendStatus(204);
+    if (tweet) {
+        res.status(204).json('트윗이 삭제 되었습니다.');
+    } else {
+        res.status(404).json('트윗이 존재하지 않습니다.');
+    }
+    
+
+})
+
 
 export default router;
